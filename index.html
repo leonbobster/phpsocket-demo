@@ -1,0 +1,43 @@
+<html>
+<head>
+<link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="bower_components/socket.io-client/dist/socket.io.js"></script>
+<script src="bower_components/knockout/dist/knockout.js"></script>
+<script>
+var socket = io('http://0.0.0.0:2021');
+socket.on('connect', function() {
+    console.log('connected');    
+});
+socket.on('disconnect', function() {});
+</script>
+</head>
+<body>
+    <div style="margin-bottom: 5px; width: 500px;" data-bind="progressbar: progressValue"></div>
+    <button data-bind="click: start">Start</button>
+</body>
+<script>
+ko.bindingHandlers.progressbar = {
+    init: function (element) {
+        $(element).progressbar({value: 0});
+    },
+    update: function (element, valueAccessor) {
+        var value = ko.unwrap(valueAccessor());
+        $(element).progressbar('value', parseFloat(value));
+    }
+};
+function ViewModel(socket) {
+    this.id = 1;
+    this.progressValue = ko.observable(0);
+    socket.on('progress' + this.id, function (msg) {
+        this.progressValue(msg.progress);       
+    }.bind(this));
+    this.start = function () {
+        console.log('start ' + this.id); 
+        socket.emit('start', {id: this.id});    
+    }.bind(this);
+};
+ko.applyBindings(new ViewModel(socket));
+</script>
+</html>

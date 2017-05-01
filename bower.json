@@ -1,0 +1,9 @@
+{
+    "name": "phpsocket-demo",
+    "dependencies": {
+        "jquery": "*",
+        "jquery-ui": "*",
+        "knockout": "*",
+        "socket.io-client": "*"    
+    }    
+}
