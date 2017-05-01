@@ -28,15 +28,15 @@ ko.bindingHandlers.progressbar = {
     }
 };
 function ViewModel(socket) {
-    this.id = 1;
+    var self = this;
     this.progressValue = ko.observable(0);
-    socket.on('progress' + this.id, function (msg) {
-        this.progressValue(msg.progress);       
-    }.bind(this));
     this.start = function () {
-        console.log('start ' + this.id); 
-        socket.emit('start', {id: this.id});    
-    }.bind(this);
+        var id = Math.floor(Math.random() * 100);
+        socket.on('progress' + id, function (msg) {
+            self.progressValue(msg.progress);       
+        });
+        socket.emit('start', {id: id});    
+    };
 };
 ko.applyBindings(new ViewModel(socket));
 </script>
